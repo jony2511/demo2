@@ -1,0 +1,207 @@
+/* Dark mode specific styles */
+.dark-mode {
+    --primary-color: #8b5cf6;
+    --secondary-color: #a78bfa;
+    --accent-color: #f472b6;
+    --background-color: #161618;
+    --card-background: #1c1c1f;
+    --text-color: #e2e8f0;
+    --text-color-muted: #94a3b8;
+    --heading-color: #f1f5f9;
+    --white: #f8fafc;
+    --gray: #94a3b8;
+    --success: #4ade80;
+    --warning: #fbbf24;
+    --error: #f87171;
+    --border-color: #27272a;
+    --shadow-color: rgba(139, 92, 246, 0.2);
+    --navbar-bg: rgba(28, 28, 31, 0.95);
+    --navbar-border: rgba(139, 92, 246, 0.1);
+    --hero-gradient-start: #2d1b69;
+    --hero-gradient-end: #1a1a1c;
+    --card-hover-bg: #27272a;
+    --button-gradient-start: #8b5cf6;
+    --button-gradient-end: #a78bfa;
+    --card-glow: 0 0 20px rgba(139, 92, 246, 0.15);
+}
+
+/* Animated background */
+.dark-mode body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(244, 114, 182, 0.1) 0%, transparent 25%);
+    animation: backgroundShift 15s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes backgroundShift {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+/* Navbar styles */
+.dark-mode .navbar {
+    background: var(--navbar-bg);
+    border-bottom: 1px solid var(--navbar-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent,
+        rgba(139, 92, 246, 0.3),
+        rgba(244, 114, 182, 0.3),
+        transparent
+    );
+    animation: navGlow 4s ease-in-out infinite;
+}
+
+@keyframes navGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Card styles */
+.dark-mode .project-card {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .project-card:hover {
+    box-shadow: var(--card-glow);
+    border-color: rgba(139, 92, 246, 0.3);
+    background: var(--card-hover-bg);
+}
+
+.dark-mode .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(139, 92, 246, 0.1),
+        transparent
+    );
+    transform: skewX(-15deg);
+    animation: cardShine 6s ease-in-out infinite;
+}
+
+@keyframes cardShine {
+    0% { left: -100%; }
+    20%, 100% { left: 100%; }
+}
+
+/* Button styles */
+.dark-mode .btn-primary {
+    background: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    border: none;
+}
+
+.dark-mode .btn-primary:hover {
+    background: linear-gradient(135deg, var(--button-gradient-end), var(--accent-color));
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+}
+
+/* Section title glow effect */
+.dark-mode .section-title {
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+}
+
+/* Skill item styles */
+.dark-mode .skill-item {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .skill-item:hover {
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: var(--card-glow);
+}
+
+/* Form input styles */
+.dark-mode input,
+.dark-mode textarea {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-color);
+}
+
+.dark-mode input:focus,
+.dark-mode textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--input-focus);
+}
+
+/* Hero section */
+.dark-mode .hero {
+    background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
+    position: relative;
+    overflow: hidden;
+}
+
+.dark-mode .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(244, 114, 182, 0.15) 0%, transparent 40%);
+    animation: heroGlow 10s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+/* Floating animation for cards */
+.dark-mode .project-card,
+.dark-mode .skill-item {
+    animation: cardFloat 6s ease-in-out infinite;
+}
+
+@keyframes cardFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Loading spinner */
+.dark-mode .loading-spinner {
+    border-color: var(--border-color);
+    border-top-color: var(--primary-color);
+}
