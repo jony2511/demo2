@@ -133,12 +133,12 @@ try {
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <?php if (is_logged_in()): ?>
+                <!-- <?php if (is_logged_in()): ?>
                     <li><a href="admin.php">Admin</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 <?php else: ?>
                     <li><a href="login.php">Login</a></li>
-                <?php endif; ?>
+                <?php endif; ?> -->
                 <li>
                     <button id="theme-toggle" title="Toggle dark mode">
                         <i class="fas fa-moon"></i>
@@ -544,39 +544,76 @@ try {
         });
 
         // Contact form handling with AJAX
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const loadingIndicator = document.querySelector('.loading-indicator');
             const formMessages = document.getElementById('form-messages');
             const form = this;
             
-            loadingIndicator.style.display = 'block';
+            // Get form values for validation
+            const name = form.querySelector('[name="name"]').value.trim();
+            const email = form.querySelector('[name="email"]').value.trim();
+            const message = form.querySelector('[name="message"]').value.trim();
             
-            const formData = new FormData(this);
-            formData.append('action', 'contact');
+            // Clear previous messages
+            formMessages.innerHTML = '';
             
-            fetch('process.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                loadingIndicator.style.display = 'none';
-                formMessages.innerHTML = `<div class="alert alert-${data.status}">${data.message}</div>`;
-                
+            // Client-side validation
+            if (!name || !email || !message) {
+                formMessages.innerHTML = '<div class="alert alert-error">Please fill in all fields.</div>';
+                return;
+            }
+
+            try {
+                formMessages.innerHTML = '<div class="alert alert-info">Sending message...</div>';
+
+                const formData = new FormData(form);
+                formData.append('action', 'contact');
+
+                // Log form data for debugging
+                console.log('Sending form data:', {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    message: formData.get('message'),
+                    action: formData.get('action')
+                });
+
+                const response = await fetch('process.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                let data;
+                try {
+                    data = await response.json();
+                } catch (jsonError) {
+                    // If JSON parsing fails, show the raw response for debugging
+                    const rawText = await response.text();
+                    console.error('Raw server response:', rawText);
+                    formMessages.innerHTML = `<div class="alert alert-error">Server error: <pre>${rawText}</pre></div>`;
+                    return;
+                }
+                console.log('Server response:', data);
+
+                const alertClass = data.status === 'success' ? 'success' : 'error';
+                formMessages.innerHTML = `<div class="alert alert-${alertClass}">${data.message}</div>`;
+
                 if (data.status === 'success') {
                     form.reset();
                     setTimeout(() => {
                         formMessages.innerHTML = '';
                     }, 5000);
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                loadingIndicator.style.display = 'none';
-                formMessages.innerHTML = '<div class="alert alert-error">An error occurred. Please try again later.</div>';
-            });
+            } catch (error) {
+                console.error('Form submission error:', error);
+                formMessages.innerHTML = `<div class="alert alert-error">An error occurred. Please try again later.<br><pre>${error}</pre></div>`;
+            }
         });
 
         // Animate skill bars when they come into view
